@@ -1,35 +1,39 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// src/App.tsx
 
-function App() {
-  const [count, setCount] = useState(0)
+import {
+  QueryClient,
+  QueryClientProvider,
+  QueryCache,
+} from "@tanstack/react-query";
+import { AuthProvider } from "./contexts/AuthContext";
+import TraineeRoutes from "./routes/TraineeRoutes";
+import TrainerRoutes from "./routes/TrainerRoutes";
+import LoginPage from "./pages/LoginPage";
 
+// Add new QueryCache
+const queryClient = new QueryClient({
+  defaultOptions: {
+    mutations: {
+      retry: false,
+    },
+    queries: {
+      retry: false,
+      refetchOnWindowFocus: false,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes (garbage collection / cache time)
+    },
+  },
+  queryCache: new QueryCache(),
+});
+
+export default function App() {
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider
+        loginPage={<LoginPage />}
+        traineeRoutes={<TraineeRoutes />}
+        trainerRoutes={<TrainerRoutes />}
+      />
+    </QueryClientProvider>
+  );
 }
-
-export default App

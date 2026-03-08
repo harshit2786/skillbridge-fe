@@ -127,3 +127,56 @@
     @apply font-sans;
     }
 }
+
+/* Vertical drift animations — each layer drifts at different speeds */
+@keyframes wave-drift-1 {
+  0%, 100% {
+    transform: translateY(0%);
+  }
+  50% {
+    transform: translateY(3%);
+  }
+}
+
+@keyframes wave-drift-2 {
+  0%, 100% {
+    transform: translateY(0%);
+  }
+  50% {
+    transform: translateY(-2.5%);
+  }
+}
+
+@keyframes wave-drift-3 {
+  0%, 100% {
+    transform: translateY(0%);
+  }
+  50% {
+    transform: translateY(2%);
+  }
+}
+
+@keyframes wave-drift-4 {
+  0%, 100% {
+    transform: translateY(0%);
+  }
+  50% {
+    transform: translateY(-1.5%);
+  }
+}
+
+@utility animate-wave-drift-1 {
+  animation: wave-drift-1 14s ease-in-out infinite;
+}
+
+@utility animate-wave-drift-2 {
+  animation: wave-drift-2 11s ease-in-out infinite;
+}
+
+@utility animate-wave-drift-3 {
+  animation: wave-drift-3 9s ease-in-out infinite;
+}
+
+@utility animate-wave-drift-4 {
+  animation: wave-drift-4 12s ease-in-out infinite;
+}
