@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import type { Project } from "../../models/types";
 import { useAuth } from "@/hooks/useAuth";
+import { navigate } from "raviger";
 
 export default function TrainerDashboard() {
   const { user, logout } = useAuth();
@@ -25,7 +26,8 @@ export default function TrainerDashboard() {
   const adminIds = new Set(adminProjects.map((p) => p.id));
   const onlyMemberProjects = memberProjects.filter((p) => !adminIds.has(p.id));
 
-  const allEmpty = adminProjects.length === 0 && onlyMemberProjects.length === 0;
+  const allEmpty =
+    adminProjects.length === 0 && onlyMemberProjects.length === 0;
 
   if (isLoading) {
     return (
@@ -158,7 +160,10 @@ export default function TrainerDashboard() {
 
 function AdminProjectCard({ project }: { project: Project }) {
   return (
-    <div className="group relative cursor-pointer overflow-hidden rounded-xl border-2 border-emerald-200 bg-linear-to-br from-emerald-50 to-white p-5 transition-all hover:border-emerald-300 hover:shadow-lg hover:shadow-emerald-100">
+    <div
+      onClick={() => navigate(`/projects/${project.id}`)}
+      className="group relative cursor-pointer overflow-hidden rounded-xl border-2 border-emerald-200 bg-linear-to-br from-emerald-50 to-white p-5 transition-all hover:border-emerald-300 hover:shadow-lg hover:shadow-emerald-100"
+    >
       {/* Admin Badge */}
       <div className="absolute right-3 top-3">
         <span className="inline-flex items-center gap-1 rounded-full bg-emerald-700 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-white">
@@ -190,7 +195,10 @@ function AdminProjectCard({ project }: { project: Project }) {
 
 function MemberProjectCard({ project }: { project: Project }) {
   return (
-    <div className="group cursor-pointer rounded-xl border border-gray-200 bg-white p-5 transition-all hover:border-gray-300 hover:shadow-md">
+    <div
+      onClick={() => navigate(`/projects/${project.id}`)}
+      className="group cursor-pointer rounded-xl border border-gray-200 bg-white p-5 transition-all hover:border-gray-300 hover:shadow-md"
+    >
       {/* Icon */}
       <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-lg bg-gray-100">
         <BookOpen className="h-5 w-5 text-gray-500" />

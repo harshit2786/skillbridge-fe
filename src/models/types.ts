@@ -95,3 +95,18 @@ export interface Project {
   id: string;
   name: string;
 }
+
+// src/models/types.ts — add these
+
+export interface ProjectDetail {
+  id: string;
+  name: string;
+  description?: string;
+  trainers: Trainer[];
+  trainees: Trainee[];
+  admin: Trainer;
+}
+
+export interface ProjectDetailResponse {
+  project: ProjectDetail;
+}

@@ -2,9 +2,21 @@
 
 import { useRoutes } from "raviger";
 import TraineeDashboard from "../pages/trainee/TraineeDashboard";
+import { ProjectProvider } from "../contexts/ProjectContext";
+import TraineeProjectRoutes from "./TraineeProjectRoutes";
 
 const traineeRouteMap = {
-  "/": () => <TraineeDashboard />,  
+  "/": () => <TraineeDashboard />,
+  "/projects/:projectId": ({ projectId }: { projectId: string }) => (
+    <ProjectProvider projectId={projectId}>
+      <TraineeProjectRoutes />
+    </ProjectProvider>
+  ),
+  "/projects/:projectId/*": ({ projectId }: { projectId: string }) => (
+    <ProjectProvider projectId={projectId}>
+      <TraineeProjectRoutes />
+    </ProjectProvider>
+  ),
 };
 
 export default function TraineeRoutes() {

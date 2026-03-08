@@ -4,6 +4,7 @@ import { useTraineeMe } from "../../controllers/traineeAuth";
 import { FolderOpen, BookOpen, LogOut, Loader2 } from "lucide-react";
 import type { Project } from "../../models/types";
 import { useAuth } from "@/hooks/useAuth";
+import { navigate } from "raviger";
 
 export default function TraineeDashboard() {
   const { user, logout } = useAuth();
@@ -113,7 +114,10 @@ export default function TraineeDashboard() {
 
 function TraineeProjectCard({ project }: { project: Project }) {
   return (
-    <div className="group cursor-pointer overflow-hidden rounded-xl border border-gray-200 bg-white transition-all hover:border-emerald-200 hover:shadow-lg hover:shadow-emerald-50">
+    <div
+      onClick={() => navigate(`/projects/${project.id}`)}
+      className="group cursor-pointer overflow-hidden rounded-xl border border-gray-200 bg-white transition-all hover:border-emerald-200 hover:shadow-lg hover:shadow-emerald-50"
+    >
       {/* Color Bar */}
       <div className="h-2 bg-linear-to-r from-emerald-500 to-emerald-400" />
 
