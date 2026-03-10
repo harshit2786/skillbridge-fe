@@ -6,11 +6,15 @@ import ProjectQuizzes from "../pages/trainer/project/ProjectQuizzes";
 import ProjectKnowledgeBase from "../pages/trainer/project/ProjectKnowledgeBase";
 import ProjectWebinars from "../pages/trainer/project/ProjectWebinars";
 import ProjectSettings from "../pages/trainer/project/ProjectSettings";
+import QuizDetail from "@/pages/trainer/project/QuizDetail";
 
 const routeMap = {
   "/projects/:projectId": () => <ProjectDashboard />,
   "/projects/:projectId/courses": () => <ProjectCourses />,
   "/projects/:projectId/quizzes": () => <ProjectQuizzes />,
+  "/projects/:projectId/quizzes/:quizId": ({ quizId }: { quizId: string }) => (
+    <QuizDetail quizId={quizId} />
+  ),
   "/projects/:projectId/knowledge-base": () => <ProjectKnowledgeBase />,
   "/projects/:projectId/webinars": () => <ProjectWebinars />,
   "/projects/:projectId/settings": () => <ProjectSettings />,

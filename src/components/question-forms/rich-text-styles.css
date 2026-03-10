@@ -1,0 +1,182 @@
+/* ── Tiptap editor styles ──────────── */
+
+.tiptap {
+  outline: none;
+}
+
+.tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: var(--muted-foreground);
+  pointer-events: none;
+  height: 0;
+  font-style: italic;
+}
+
+/* Headings */
+.tiptap h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 1rem 0 0.5rem;
+}
+
+.tiptap h2 {
+  font-size: 1.375rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 0.875rem 0 0.375rem;
+}
+
+.tiptap h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 0.75rem 0 0.25rem;
+}
+
+/* Paragraphs */
+.tiptap p {
+  margin: 0.5rem 0;
+}
+
+/* Bold & italic */
+.tiptap strong {
+  font-weight: 700;
+}
+
+.tiptap em {
+  font-style: italic;
+}
+
+/* Inline code */
+.tiptap code {
+  background: var(--muted);
+  border-radius: 0.25rem;
+  padding: 0.15rem 0.4rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.875em;
+}
+
+/* Code blocks */
+.tiptap pre {
+  background: oklch(0.205 0 0);
+  color: oklch(0.92 0 0);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin: 0.75rem 0;
+  overflow-x: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+.tiptap pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+  font-size: inherit;
+}
+
+/* Lists */
+.tiptap ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin: 0.5rem 0;
+}
+
+.tiptap ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin: 0.5rem 0;
+}
+
+.tiptap li {
+  margin: 0.25rem 0;
+}
+
+/* Blockquote */
+.tiptap blockquote {
+  border-left: 3px solid var(--border);
+  padding-left: 1rem;
+  margin: 0.75rem 0;
+  color: var(--muted-foreground);
+  font-style: italic;
+}
+
+/* Horizontal rule */
+.tiptap hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 1.5rem 0;
+}
+
+/* Links */
+.tiptap a {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ── Video embed ───────────────────── */
+.tiptap .video-embed-wrapper,
+.video-embed-wrapper {
+  margin: 1rem 0;
+  position: relative;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: oklch(0.145 0 0);
+}
+
+.tiptap .video-embed-wrapper iframe,
+.video-embed-wrapper iframe {
+  display: block;
+  width: 100%;
+  height: 315px;
+  border: none;
+  border-radius: 0.5rem;
+}
+
+/* Selected state in editor */
+.tiptap .video-embed-wrapper.ProseMirror-selectednode {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  border-radius: 0.5rem;
+}
+
+/* Syntax highlighting tokens */
+.tiptap pre .hljs-comment,
+.tiptap pre .hljs-quote {
+  color: #6a9955;
+}
+
+.tiptap pre .hljs-keyword,
+.tiptap pre .hljs-selector-tag,
+.tiptap pre .hljs-built_in {
+  color: #569cd6;
+}
+
+.tiptap pre .hljs-string,
+.tiptap pre .hljs-attr {
+  color: #ce9178;
+}
+
+.tiptap pre .hljs-number,
+.tiptap pre .hljs-literal {
+  color: #b5cea8;
+}
+
+.tiptap pre .hljs-title,
+.tiptap pre .hljs-section,
+.tiptap pre .hljs-type {
+  color: #dcdcaa;
+}
+
+.tiptap pre .hljs-variable,
+.tiptap pre .hljs-template-variable {
+  color: #9cdcfe;
+}
+
+.tiptap pre .hljs-meta {
+  color: #c586c0;
+}

@@ -110,3 +110,273 @@ export interface ProjectDetail {
 export interface ProjectDetailResponse {
   project: ProjectDetail;
 }
+
+export type ResourceStatus = "PROCESSING" | "PROCESSED" | "FAILED";
+
+export interface ResourceUploader {
+  id: string;
+  name: string;
+  email: string;
+}
+
+export interface Resource {
+  id: string;
+  filename: string;
+  url: string;
+  size: number;
+  status: ResourceStatus;
+  createdAt: string;
+  uploader: ResourceUploader;
+}
+
+export interface ResourceDetail extends Resource {
+  refId: string;
+  mimeType: string;
+  projectId: string;
+  uploadedBy: string;
+  errorMsg: string | null;
+}
+
+export interface ResourceListResponse {
+  resources: Resource[];
+}
+
+export interface ResourceDetailResponse {
+  resource: ResourceDetail;
+}
+
+export interface ResourceUploadResponse {
+  message: string;
+  resource: {
+    id: string;
+    filename: string;
+    status: ResourceStatus;
+    createdAt: string;
+  };
+}
+
+export interface DeleteResourceResponse {
+  message: string;
+}
+
+// src/models/types.ts — add these
+
+export interface ChatSource {
+  id: string;
+  resourceId: string;
+  filename: string;
+  url: string;
+  chunkText?: string;
+  score: number;
+}
+
+export interface ChatMessage {
+  id: string;
+  chatId: string;
+  role: "USER" | "ASSISTANT";
+  content: string;
+  createdAt: string;
+  sources: ChatSource[];
+}
+
+export interface Chat {
+  id: string;
+  title: string;
+  projectId: string;
+  traineeId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ChatWithCount extends Chat {
+  _count: {
+    messages: number;
+  };
+}
+
+export interface ChatWithMessages extends Chat {
+  messages: ChatMessage[];
+}
+
+export interface ChatListResponse {
+  chats: ChatWithCount[];
+}
+
+export interface ChatDetailResponse {
+  chat: ChatWithMessages;
+}
+
+export interface CreateChatRequest {
+  title?: string;
+}
+
+export interface CreateChatResponse {
+  message: string;
+  chat: Chat;
+}
+
+export interface DeleteChatResponse {
+  message: string;
+}
+
+// SSE Event Types
+export interface SSEUserMessageEvent {
+  type: "user_message";
+  messageId: string;
+}
+
+export interface SSEStatusEvent {
+  type: "status";
+  message: string;
+}
+
+export interface SSEChunkEvent {
+  type: "chunk";
+  content: string;
+}
+
+export interface SSETitleEvent {
+  type: "title";
+  title: string;
+}
+
+export interface SSESourcesEvent {
+  type: "sources";
+  messageId: string;
+  sources: ChatSource[];
+}
+
+export interface SSEDoneEvent {
+  type: "done";
+  messageId: string;
+}
+
+export interface SSEErrorEvent {
+  type: "error";
+  message: string;
+}
+
+export type SSEEvent =
+  | SSEUserMessageEvent
+  | SSEStatusEvent
+  | SSEChunkEvent
+  | SSETitleEvent
+  | SSESourcesEvent
+  | SSEDoneEvent
+  | SSEErrorEvent;
+
+// src/models/types.ts — add these
+
+export interface QuizCreator {
+  id: string;
+  name: string;
+  email: string;
+}
+
+export interface Quiz {
+  id: string;
+  name: string;
+  description: string;
+  projectId: string;
+  published: boolean;
+  passingPercent: number;
+  createdAt: string;
+  creators: QuizCreator[];
+  content: {
+    position: number;
+  };
+}
+
+export interface QuizSection {
+  id: string;
+  quizId: string;
+  title: string;
+  description: string | null;
+  order: number;
+  createdAt: string;
+  updatedAt: string;
+  _count: {
+    questions: number;
+  };
+}
+
+export interface QuizWithSections extends Quiz {
+  sections: QuizSection[];
+}
+
+export interface QuizListResponse {
+  quizzes: Quiz[];
+}
+
+export interface QuizDetailResponse {
+  quiz: QuizWithSections;
+}
+
+export interface CreateQuizRequest {
+  name: string;
+  description?: string;
+  passingPercent?: number;
+  creatorIds?: string[];
+}
+
+export interface CreateQuizResponse {
+  message: string;
+  quiz: Quiz;
+  position: number;
+}
+
+export interface AddCreatorsRequest {
+  trainerIds: string[];
+}
+
+export interface AddCreatorsResponse {
+  message: string;
+  creators: QuizCreator[];
+}
+
+export interface RemoveCreatorResponse {
+  message: string;
+}
+
+export interface TogglePublishResponse {
+  message: string;
+  quiz: Quiz;
+}
+
+export interface CreateSectionRequest {
+  title: string;
+  description?: string;
+}
+
+export interface CreateSectionResponse {
+  message: string;
+  section: QuizSection;
+}
+
+export interface UpdateSectionRequest {
+  title?: string;
+  description?: string;
+}
+
+export interface UpdateSectionResponse {
+  message: string;
+  section: QuizSection;
+}
+
+export interface DeleteSectionResponse {
+  message: string;
+}
+
+export interface ReorderSectionItem {
+  sectionId: string;
+  order: number;
+}
+
+export interface ReorderSectionsRequest {
+  order: ReorderSectionItem[];
+}
+
+export interface ReorderSectionsResponse {
+  message: string;
+  sections: QuizSection[];
+}

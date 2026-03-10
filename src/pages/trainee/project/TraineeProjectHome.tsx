@@ -10,15 +10,18 @@ import {
   FileText,
   Clock,
   Play,
+  Loader2,
+  FolderOpen,
 } from "lucide-react";
 import { useProject } from "@/hooks/useProject";
+import { useResources } from "@/controllers/resources";
 
 // Dummy data for resources (backend not implemented yet)
-const dummyResources = [
-  { id: "1", title: "Getting Started Guide", type: "PDF", icon: FileText },
-  { id: "2", title: "Project Overview", type: "DOC", icon: BookOpen },
-  { id: "3", title: "Best Practices", type: "PDF", icon: FileText },
-];
+// const dummyResources = [
+//   { id: "1", title: "Getting Started Guide", type: "PDF", icon: FileText },
+//   { id: "2", title: "Project Overview", type: "DOC", icon: BookOpen },
+//   { id: "3", title: "Best Practices", type: "PDF", icon: FileText },
+// ];
 
 // Dummy data for upcoming webinars
 const dummyWebinars = [
@@ -37,12 +40,20 @@ const dummyWebinars = [
     host: "Jane Smith",
   },
 ];
+const formatSize = (bytes: number) => {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+};
 
 export default function TraineeProjectHome() {
   const { project, currentTrainee } = useProject();
   const basePath = `/projects/${project.id}`;
   const firstName = currentTrainee?.name?.split(" ")[0] ?? "there";
-
+  const { data: resourcesData, isLoading: isLoadingResources } = useResources(
+    project.id,
+  );
+  const resources = resourcesData?.resources ?? [];
   const hour = new Date().getHours();
   const greeting =
     hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
@@ -107,25 +118,56 @@ export default function TraineeProjectHome() {
             </button>
           </div>
 
-          <div className="space-y-3">
-            {dummyResources.map((resource) => (
-              <div
-                key={resource.id}
-                className="group flex cursor-pointer items-center gap-3 rounded-xl border border-gray-100 bg-gray-50 p-3 transition-all hover:border-gray-200 hover:bg-white hover:shadow-sm"
-              >
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white shadow-sm">
-                  <resource.icon className="h-4 w-4 text-gray-500" />
+          {isLoadingResources && (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="h-5 w-5 animate-spin text-emerald-500" />
+            </div>
+          )}
+
+          {!isLoadingResources && resources.length === 0 && (
+            <div className="flex flex-col items-center py-8 text-center">
+              <FolderOpen className="mb-2 h-8 w-8 text-gray-300" />
+              <p className="text-xs text-gray-500">
+                No resources available yet
+              </p>
+            </div>
+          )}
+
+          {!isLoadingResources && resources.length > 0 && (
+            <div className="space-y-2">
+              {resources.slice(0, 4).map((resource) => (
+                <div
+                  key={resource.id}
+                  onClick={() =>
+                    navigate(`${basePath}/resources?file=${resource.id}`)
+                  }
+                  className="group flex cursor-pointer items-center gap-3 rounded-xl border border-gray-100 bg-gray-50 p-3 transition-all hover:border-gray-200 hover:bg-white hover:shadow-sm"
+                >
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white shadow-sm">
+                    <FileText className="h-4 w-4 text-gray-500" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium text-gray-900 group-hover:text-emerald-700">
+                      {resource.filename.replace(/\.pdf$/i, "")}
+                    </p>
+                    <p className="text-[11px] text-gray-400">
+                      {formatSize(resource.size)} • {resource.uploader.name}
+                    </p>
+                  </div>
+                  <ArrowRight className="h-3.5 w-3.5 text-gray-300 transition-colors group-hover:text-emerald-500" />
                 </div>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium text-gray-900 group-hover:text-emerald-700">
-                    {resource.title}
-                  </p>
-                  <p className="text-[11px] text-gray-400">{resource.type}</p>
-                </div>
-                <ArrowRight className="h-3.5 w-3.5 text-gray-300 transition-colors group-hover:text-emerald-500" />
-              </div>
-            ))}
-          </div>
+              ))}
+
+              {resources.length > 4 && (
+                <button
+                  onClick={() => navigate(`${basePath}/resources`)}
+                  className="w-full rounded-lg py-2 text-center text-xs font-medium text-emerald-600 transition-colors hover:bg-emerald-50"
+                >
+                  +{resources.length - 4} more resources
+                </button>
+              )}
+            </div>
+          )}
         </div>
 
         {/* ===== Card 3: Upcoming Webinars ===== */}
