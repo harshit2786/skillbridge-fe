@@ -380,3 +380,100 @@ export interface ReorderSectionsResponse {
   message: string;
   sections: QuizSection[];
 }
+
+// src/models/types.ts — add these
+
+export type ContentType = "quizzes" | "courses";
+
+export interface Course {
+  id: string;
+  name: string;
+  description: string;
+  projectId: string;
+  published: boolean;
+  createdAt: string;
+  creators: QuizCreator[]; // same shape as quiz creators
+  content: {
+    position: number;
+  };
+}
+
+export interface CourseSection {
+  id: string;
+  courseId: string;
+  title: string;
+  description: string | null;
+  order: number;
+  createdAt: string;
+  updatedAt: string;
+  _count: {
+    questions: number;
+  };
+}
+
+export interface CourseWithSections extends Course {
+  sections: CourseSection[];
+}
+
+export interface CourseListResponse {
+  courses: Course[];
+}
+
+export interface CourseDetailResponse {
+  course: CourseWithSections;
+}
+
+export interface CreateCourseRequest {
+  name: string;
+  description?: string;
+  creatorIds?: string[];
+}
+
+export interface CreateCourseResponse {
+  message: string;
+  course: Course;
+  position: number;
+}
+
+// src/models/types.ts — add these
+
+export interface ProjectContent {
+  id: string;
+  projectId: string;
+  type: "QUIZ" | "COURSE";
+  position: number;
+  quizId: string | null;
+  courseId: string | null;
+  quiz: {
+    id: string;
+    name: string;
+    description: string | null;
+    published: boolean;
+    creators: QuizCreator[];
+  } | null;
+  course: {
+    id: string;
+    name: string;
+    description: string | null;
+    published: boolean;
+    creators: QuizCreator[];
+  } | null;
+}
+
+export interface ProjectContentsResponse {
+  contents: ProjectContent[];
+}
+
+export interface ReorderContentItem {
+  contentId: string;
+  position: number;
+}
+
+export interface ReorderContentsRequest {
+  order: ReorderContentItem[];
+}
+
+export interface ReorderContentsResponse {
+  message: string;
+  contents: ProjectContent[];
+}

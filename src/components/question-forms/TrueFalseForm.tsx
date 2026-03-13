@@ -21,9 +21,15 @@ interface TrueFalseFormProps {
   onSubmit: (values: TrueFalseFormValues) => void;
   onCancel: () => void;
   defaultValues?: TrueFalseFormValues;
+  hidePoints?: boolean;
 }
 
-export function TrueFalseForm({ onSubmit, onCancel, defaultValues }: TrueFalseFormProps) {
+export function TrueFalseForm({
+  onSubmit,
+  onCancel,
+  defaultValues,
+  hidePoints = false,
+}: TrueFalseFormProps) {
   const form = useForm<TrueFalseFormValues>({
     resolver: zodResolver(trueFalseFormSchema),
     defaultValues: defaultValues ?? {
@@ -98,26 +104,28 @@ export function TrueFalseForm({ onSubmit, onCancel, defaultValues }: TrueFalseFo
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="points"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Points</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  min={1}
-                  max={100}
-                  className="w-28"
-                  {...field}
-                  onChange={(e) => field.onChange(e.target.valueAsNumber)}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {!hidePoints && (
+          <FormField
+            control={form.control}
+            name="points"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Points</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    min={1}
+                    max={100}
+                    className="w-28"
+                    {...field}
+                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
         <div className="flex justify-end gap-3 border-t pt-4">
           <Button type="button" variant="outline" onClick={onCancel}>

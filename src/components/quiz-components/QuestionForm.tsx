@@ -39,6 +39,7 @@ interface QuestionFormProps {
   onSubmit: (question: Question) => void;
   editingQuestion?: Question | null;
   nextOrder: number;
+  hidePoints?: boolean;
 }
 
 export function QuestionForm({
@@ -48,6 +49,7 @@ export function QuestionForm({
   onSubmit,
   editingQuestion,
   nextOrder,
+  hidePoints = false,
 }: QuestionFormProps) {
   const typeConfig = questionTypeConfigs.find((c) => c.id === type);
   const Icon = typeConfig?.icon;
@@ -170,7 +172,8 @@ export function QuestionForm({
   };
 
   const getFillUpsDefaults = (): FillUpsFormValues | undefined => {
-    if (!editingQuestion || editingQuestion.type !== "fill_ups") return undefined;
+    if (!editingQuestion || editingQuestion.type !== "fill_ups")
+      return undefined;
     const q = editingQuestion;
     return {
       template: q.data.template,
@@ -179,7 +182,8 @@ export function QuestionForm({
   };
 
   const getTrueFalseDefaults = (): TrueFalseFormValues | undefined => {
-    if (!editingQuestion || editingQuestion.type !== "true_false") return undefined;
+    if (!editingQuestion || editingQuestion.type !== "true_false")
+      return undefined;
     const q = editingQuestion;
     return {
       question: q.question,
@@ -189,7 +193,8 @@ export function QuestionForm({
   };
 
   const getLongAnswerDefaults = (): LongAnswerFormValues | undefined => {
-    if (!editingQuestion || editingQuestion.type !== "long_answer") return undefined;
+    if (!editingQuestion || editingQuestion.type !== "long_answer")
+      return undefined;
     const q = editingQuestion;
     return {
       question: q.question,
@@ -200,7 +205,8 @@ export function QuestionForm({
   };
 
   const getContentBlockDefaults = (): ContentBlockFormValues | undefined => {
-    if (!editingQuestion || editingQuestion.type !== "content_block") return undefined;
+    if (!editingQuestion || editingQuestion.type !== "content_block")
+      return undefined;
     const q = editingQuestion;
     return {
       content: q.data.content,
@@ -218,6 +224,7 @@ export function QuestionForm({
             onSubmit={handleMCQSubmit}
             onCancel={handleCancel}
             defaultValues={getMCQDefaults()}
+            hidePoints={hidePoints}
           />
         );
       case "fill_ups":
@@ -227,6 +234,7 @@ export function QuestionForm({
             onSubmit={handleFillUpsSubmit}
             onCancel={handleCancel}
             defaultValues={getFillUpsDefaults()}
+            hidePoints={hidePoints}
           />
         );
       case "true_false":
@@ -236,6 +244,7 @@ export function QuestionForm({
             onSubmit={handleTrueFalseSubmit}
             onCancel={handleCancel}
             defaultValues={getTrueFalseDefaults()}
+            hidePoints={hidePoints}
           />
         );
       case "long_answer":
@@ -245,6 +254,7 @@ export function QuestionForm({
             onSubmit={handleLongAnswerSubmit}
             onCancel={handleCancel}
             defaultValues={getLongAnswerDefaults()}
+            hidePoints={hidePoints}
           />
         );
       case "content_block":

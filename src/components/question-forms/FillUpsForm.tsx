@@ -23,9 +23,15 @@ interface FillUpsFormProps {
   onSubmit: (values: FillUpsFormValues) => void;
   onCancel: () => void;
   defaultValues?: FillUpsFormValues;
+  hidePoints?: boolean;
 }
 
-export function FillUpsForm({ onSubmit, onCancel, defaultValues }: FillUpsFormProps) {
+export function FillUpsForm({
+  onSubmit,
+  onCancel,
+  defaultValues,
+  hidePoints = false,
+}: FillUpsFormProps) {
   const form = useForm<FillUpsFormValues>({
     resolver: zodResolver(fillUpsFormSchema),
     defaultValues: defaultValues ?? {
@@ -50,7 +56,9 @@ export function FillUpsForm({ onSubmit, onCancel, defaultValues }: FillUpsFormPr
         <div className="flex gap-3 rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm text-blue-800">
           <Info className="mt-0.5 h-4 w-4 shrink-0" />
           <div className="space-y-1.5">
-            <p className="font-medium">How to write fill-in-the-blank questions</p>
+            <p className="font-medium">
+              How to write fill-in-the-blank questions
+            </p>
             <p>
               Write your question normally and wrap the answer(s) you want to
               blank out with <strong>asterisks (*)</strong>.
@@ -59,7 +67,8 @@ export function FillUpsForm({ onSubmit, onCancel, defaultValues }: FillUpsFormPr
               Delhi is the capital of <strong>*India*</strong>.
             </div>
             <p>
-              You can have <strong>multiple blanks</strong> in a single question:
+              You can have <strong>multiple blanks</strong> in a single
+              question:
             </p>
             <div className="rounded-md bg-blue-100/70 px-3 py-2 font-mono text-xs">
               The <strong>*Sun*</strong> rises in the <strong>*East*</strong>.
@@ -131,26 +140,28 @@ export function FillUpsForm({ onSubmit, onCancel, defaultValues }: FillUpsFormPr
         )}
 
         {/* ── Points ───────────────────────── */}
-        <FormField
-          control={form.control}
-          name="points"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Points</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  min={1}
-                  max={100}
-                  className="w-28"
-                  {...field}
-                  onChange={(e) => field.onChange(e.target.valueAsNumber)}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {!hidePoints && (
+          <FormField
+            control={form.control}
+            name="points"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Points</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    min={1}
+                    max={100}
+                    className="w-28"
+                    {...field}
+                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
         {/* ── Actions ──────────────────────── */}
         <div className="flex justify-end gap-3 border-t pt-4">

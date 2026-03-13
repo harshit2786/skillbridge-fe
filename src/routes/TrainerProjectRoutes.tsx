@@ -7,10 +7,16 @@ import ProjectKnowledgeBase from "../pages/trainer/project/ProjectKnowledgeBase"
 import ProjectWebinars from "../pages/trainer/project/ProjectWebinars";
 import ProjectSettings from "../pages/trainer/project/ProjectSettings";
 import QuizDetail from "@/pages/trainer/project/QuizDetail";
+import CourseDetail from "@/pages/trainer/project/CourseDetail";
+import LearningPath from "@/pages/trainer/project/LearningPath";
 
 const routeMap = {
   "/projects/:projectId": () => <ProjectDashboard />,
   "/projects/:projectId/courses": () => <ProjectCourses />,
+  "/projects/:projectId/learning-path": () => <LearningPath />,
+  "/projects/:projectId/courses/:courseId": ({ courseId }: { courseId: string }) => (
+    <CourseDetail courseId={courseId} />
+  ),
   "/projects/:projectId/quizzes": () => <ProjectQuizzes />,
   "/projects/:projectId/quizzes/:quizId": ({ quizId }: { quizId: string }) => (
     <QuizDetail quizId={quizId} />

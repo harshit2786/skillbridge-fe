@@ -17,27 +17,52 @@ import {
   useReorderQuestions,
 } from "@/controllers/questions";
 import type { Question, QuestionType } from "@/types/quiz";
+import type { ContentType } from "@/models/types";
 
 interface QuizCreatorProps {
   projectId: string;
-  quizId: string;
+  contentType: ContentType;
+  contentId: string;
   sectionId: string;
   sectionTitle: string;
   isCreator: boolean;
+  hidePoints?: boolean; // For courses
 }
 
 export function QuizCreator({
   projectId,
-  quizId,
+  contentType,
+  contentId,
   sectionId,
   sectionTitle,
   isCreator,
+  hidePoints = false,
 }: QuizCreatorProps) {
-  const { data, isLoading } = useQuestions(projectId, quizId, sectionId);
-  const createQuestion = useCreateQuestion(projectId, quizId, sectionId);
-  const deleteQuestion = useDeleteQuestion(projectId, quizId, sectionId);
-  const reorderQuestions = useReorderQuestions(projectId, quizId, sectionId);
   const queryClient = useQueryClient();
+  const { data, isLoading } = useQuestions(
+    projectId,
+    contentType,
+    contentId,
+    sectionId,
+  );
+  const createQuestion = useCreateQuestion(
+    projectId,
+    contentType,
+    contentId,
+    sectionId,
+  );
+  const deleteQuestion = useDeleteQuestion(
+    projectId,
+    contentType,
+    contentId,
+    sectionId,
+  );
+  const reorderQuestions = useReorderQuestions(
+    projectId,
+    contentType,
+    contentId,
+    sectionId,
+  );
   const [typeSelectorOpen, setTypeSelectorOpen] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
   const [selectedType, setSelectedType] = useState<QuestionType | null>(null);
@@ -61,7 +86,6 @@ export function QuizCreator({
     setError("");
 
     if (editingQuestion) {
-      // Update existing
       const payload = {
         type: question.type,
         question: question.question,
@@ -71,17 +95,16 @@ export function QuizCreator({
 
       api
         .patch(
-          `/projects/${projectId}/quizzes/${quizId}/sections/${sectionId}/questions/${editingQuestion.id}`,
+          `/projects/${projectId}/${contentType}/${contentId}/sections/${sectionId}/questions/${editingQuestion.id}`,
           payload,
         )
         .then(() => {
-          // Manually invalidate
           queryClient.invalidateQueries({
             queryKey: [
               "projects",
               projectId,
-              "quizzes",
-              quizId,
+              contentType,
+              contentId,
               "sections",
               sectionId,
               "questions",
@@ -98,7 +121,6 @@ export function QuizCreator({
       return;
     }
 
-    // Create new
     createQuestion.mutate(
       {
         type: question.type,
@@ -198,12 +220,16 @@ export function QuizCreator({
       {/* Stats bar */}
       {questions.length > 0 && (
         <div className="mb-6 flex items-center gap-6 rounded-lg border bg-muted/40 px-5 py-3 text-sm">
-          <div className="flex items-center gap-2 font-medium">
-            <Trophy className="h-4 w-4 text-amber-500" />
-            Total Points:&nbsp;
-            <span className="text-foreground">{totalPoints}</span>
-          </div>
-          <div className="h-4 w-px bg-border" />
+          {!hidePoints && (
+            <>
+              <div className="flex items-center gap-2 font-medium">
+                <Trophy className="h-4 w-4 text-amber-500" />
+                Total Points:&nbsp;
+                <span className="text-foreground">{totalPoints}</span>
+              </div>
+              <div className="h-4 w-px bg-border" />
+            </>
+          )}
           <span className="text-muted-foreground">
             {isCreator
               ? "Drag cards to reorder questions"
@@ -251,6 +277,7 @@ export function QuizCreator({
               onSubmit={handleFormSubmit}
               editingQuestion={editingQuestion}
               nextOrder={questions.length}
+              hidePoints={hidePoints}
             />
           )}
         </>

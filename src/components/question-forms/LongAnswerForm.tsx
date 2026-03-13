@@ -37,6 +37,7 @@ interface LongAnswerFormProps {
   onSubmit: (values: LongAnswerFormValues) => void;
   onCancel: () => void;
   defaultValues?: LongAnswerFormValues;
+  hidePoints?: boolean;
 }
 
 function createCriterion() {
@@ -48,7 +49,12 @@ function createCriterion() {
   };
 }
 
-export function LongAnswerForm({ onSubmit, onCancel, defaultValues }: LongAnswerFormProps) {
+export function LongAnswerForm({
+  onSubmit,
+  onCancel,
+  defaultValues,
+  hidePoints = false,
+}: LongAnswerFormProps) {
   const initialValues = defaultValues ?? {
     question: "",
     points: 1,
@@ -74,7 +80,7 @@ export function LongAnswerForm({ onSubmit, onCancel, defaultValues }: LongAnswer
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    })
+    }),
   );
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -118,26 +124,28 @@ export function LongAnswerForm({ onSubmit, onCancel, defaultValues }: LongAnswer
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="points"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Points</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  min={1}
-                  max={100}
-                  className="w-28"
-                  {...field}
-                  onChange={(e) => field.onChange(e.target.valueAsNumber)}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {!hidePoints && (
+          <FormField
+            control={form.control}
+            name="points"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Points</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    min={1}
+                    max={100}
+                    className="w-28"
+                    {...field}
+                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
         {/* ── Rubric ───────────────────────── */}
         <div className="space-y-3">
@@ -245,8 +253,8 @@ export function LongAnswerForm({ onSubmit, onCancel, defaultValues }: LongAnswer
             <FormItem>
               <FormLabel>Golden Solution</FormLabel>
               <p className="text-xs text-muted-foreground">
-                An ideal answer for reference. This can be used by AI grading
-                or shown after the quiz.
+                An ideal answer for reference. This can be used by AI grading or
+                shown after the quiz.
               </p>
               <FormControl>
                 <Textarea

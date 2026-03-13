@@ -19,13 +19,14 @@ interface MCQFormProps {
   onSubmit: (values: MCQFormValues) => void;
   onCancel: () => void;
   defaultValues?: MCQFormValues;
+  hidePoints?: boolean;
 }
 
 function createOption() {
   return { id: crypto.randomUUID(), text: "", isCorrect: false };
 }
 
-export function MCQForm({ onSubmit, onCancel, defaultValues }: MCQFormProps) {
+export function MCQForm({ onSubmit, onCancel, defaultValues, hidePoints = false }: MCQFormProps) {
   const form = useForm<MCQFormValues>({
     resolver: zodResolver(mcqFormSchema),
     defaultValues: defaultValues ?? {
@@ -69,7 +70,7 @@ export function MCQForm({ onSubmit, onCancel, defaultValues }: MCQFormProps) {
         />
 
         {/* ── Points ───────────────────────── */}
-        <FormField
+        {!hidePoints && (<FormField
           control={form.control}
           name="points"
           render={({ field }) => (
@@ -88,7 +89,7 @@ export function MCQForm({ onSubmit, onCancel, defaultValues }: MCQFormProps) {
               <FormMessage />
             </FormItem>
           )}
-        />
+        />)}
 
         {/* ── Options ──────────────────────── */}
         <div className="space-y-3">

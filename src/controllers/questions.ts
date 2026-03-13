@@ -1,4 +1,4 @@
-// src/controllers/questions.ts
+
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../api/axios";
@@ -13,17 +13,28 @@ import type {
   ReorderQuestionsRequest,
   ReorderQuestionsResponse,
 } from "../types/quiz";
+
 import type { AxiosError } from "axios";
-import type { ApiError } from "@/models/types";
+import type { ApiError, ContentType } from "@/models/types";
 
-const basePath = (projectId: string, quizId: string, sectionId: string) =>
-  `/projects/${projectId}/quizzes/${quizId}/sections/${sectionId}/questions`;
+const basePath = (
+  projectId: string,
+  contentType: ContentType,
+  contentId: string,
+  sectionId: string
+) =>
+  `/projects/${projectId}/${contentType}/${contentId}/sections/${sectionId}/questions`;
 
-const questionsKey = (projectId: string, quizId: string, sectionId: string) => [
+const questionsKey = (
+  projectId: string,
+  contentType: ContentType,
+  contentId: string,
+  sectionId: string
+) => [
   "projects",
   projectId,
-  "quizzes",
-  quizId,
+  contentType,
+  contentId,
   "sections",
   sectionId,
   "questions",
@@ -31,42 +42,48 @@ const questionsKey = (projectId: string, quizId: string, sectionId: string) => [
 
 export function useQuestions(
   projectId: string,
-  quizId: string,
+  contentType: ContentType,
+  contentId: string,
   sectionId: string
 ) {
   return useQuery<QuestionListResponse, AxiosError<ApiError>>({
-    queryKey: questionsKey(projectId, quizId, sectionId),
+    queryKey: questionsKey(projectId, contentType, contentId, sectionId),
     queryFn: async () => {
       const res = await api.get<QuestionListResponse>(
-        basePath(projectId, quizId, sectionId)
+        basePath(projectId, contentType, contentId, sectionId)
       );
       return res.data;
     },
-    enabled: !!projectId && !!quizId && !!sectionId,
+    enabled: !!projectId && !!contentId && !!sectionId,
   });
 }
 
 export function useQuestionDetail(
   projectId: string,
-  quizId: string,
+  contentType: ContentType,
+  contentId: string,
   sectionId: string,
   questionId: string | null
 ) {
   return useQuery<QuestionDetailResponse, AxiosError<ApiError>>({
-    queryKey: [...questionsKey(projectId, quizId, sectionId), questionId],
+    queryKey: [
+      ...questionsKey(projectId, contentType, contentId, sectionId),
+      questionId,
+    ],
     queryFn: async () => {
       const res = await api.get<QuestionDetailResponse>(
-        `${basePath(projectId, quizId, sectionId)}/${questionId}`
+        `${basePath(projectId, contentType, contentId, sectionId)}/${questionId}`
       );
       return res.data;
     },
-    enabled: !!projectId && !!quizId && !!sectionId && !!questionId,
+    enabled: !!projectId && !!contentId && !!sectionId && !!questionId,
   });
 }
 
 export function useCreateQuestion(
   projectId: string,
-  quizId: string,
+  contentType: ContentType,
+  contentId: string,
   sectionId: string
 ) {
   const qc = useQueryClient();
@@ -77,18 +94,17 @@ export function useCreateQuestion(
   >({
     mutationFn: async (data) => {
       const res = await api.post<CreateQuestionResponse>(
-        basePath(projectId, quizId, sectionId),
+        basePath(projectId, contentType, contentId, sectionId),
         data
       );
       return res.data;
     },
     onSuccess: () => {
       qc.invalidateQueries({
-        queryKey: questionsKey(projectId, quizId, sectionId),
+        queryKey: questionsKey(projectId, contentType, contentId, sectionId),
       });
-      // Also refresh section count in quiz detail
       qc.invalidateQueries({
-        queryKey: ["projects", projectId, "quizzes", quizId],
+        queryKey: ["projects", projectId, contentType, contentId],
       });
     },
   });
@@ -96,7 +112,8 @@ export function useCreateQuestion(
 
 export function useUpdateQuestion(
   projectId: string,
-  quizId: string,
+  contentType: ContentType,
+  contentId: string,
   sectionId: string,
   questionId: string
 ) {
@@ -108,14 +125,14 @@ export function useUpdateQuestion(
   >({
     mutationFn: async (data) => {
       const res = await api.patch<UpdateQuestionResponse>(
-        `${basePath(projectId, quizId, sectionId)}/${questionId}`,
+        `${basePath(projectId, contentType, contentId, sectionId)}/${questionId}`,
         data
       );
       return res.data;
     },
     onSuccess: () => {
       qc.invalidateQueries({
-        queryKey: questionsKey(projectId, quizId, sectionId),
+        queryKey: questionsKey(projectId, contentType, contentId, sectionId),
       });
     },
   });
@@ -123,23 +140,24 @@ export function useUpdateQuestion(
 
 export function useDeleteQuestion(
   projectId: string,
-  quizId: string,
+  contentType: ContentType,
+  contentId: string,
   sectionId: string
 ) {
   const qc = useQueryClient();
   return useMutation<DeleteQuestionResponse, AxiosError<ApiError>, string>({
     mutationFn: async (questionId) => {
       const res = await api.delete<DeleteQuestionResponse>(
-        `${basePath(projectId, quizId, sectionId)}/${questionId}`
+        `${basePath(projectId, contentType, contentId, sectionId)}/${questionId}`
       );
       return res.data;
     },
     onSuccess: () => {
       qc.invalidateQueries({
-        queryKey: questionsKey(projectId, quizId, sectionId),
+        queryKey: questionsKey(projectId, contentType, contentId, sectionId),
       });
       qc.invalidateQueries({
-        queryKey: ["projects", projectId, "quizzes", quizId],
+        queryKey: ["projects", projectId, contentType, contentId],
       });
     },
   });
@@ -147,7 +165,8 @@ export function useDeleteQuestion(
 
 export function useReorderQuestions(
   projectId: string,
-  quizId: string,
+  contentType: ContentType,
+  contentId: string,
   sectionId: string
 ) {
   const qc = useQueryClient();
@@ -158,14 +177,14 @@ export function useReorderQuestions(
   >({
     mutationFn: async (data) => {
       const res = await api.put<ReorderQuestionsResponse>(
-        `${basePath(projectId, quizId, sectionId)}/reorder`,
+        `${basePath(projectId, contentType, contentId, sectionId)}/reorder`,
         data
       );
       return res.data;
     },
     onSuccess: () => {
       qc.invalidateQueries({
-        queryKey: questionsKey(projectId, quizId, sectionId),
+        queryKey: questionsKey(projectId, contentType, contentId, sectionId),
       });
     },
   });

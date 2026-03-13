@@ -89,7 +89,7 @@ export default function TraineeProjectHome() {
                 "Welcome to your learning journey. Explore courses, attend webinars, and track your progress all in one place."}
             </p>
             <Button
-              onClick={() => navigate(`${basePath}/ai-playground`)}
+              onClick={() => navigate(`${basePath}/learn`)}
               className="mt-6 gap-2 bg-white text-emerald-700 hover:bg-emerald-50"
             >
               <Play className="h-4 w-4" />
